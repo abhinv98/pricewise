@@ -1,5 +1,8 @@
+"use server";
+
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { extractPrice } from "../utils";
 
 export async function scrapeAmazonProduct(url: string) {
   if (!url) return;
@@ -14,12 +17,37 @@ export async function scrapeAmazonProduct(url: string) {
       password: password,
     },
     host: "brd.superproxy.io",
-    port,
+    port: port,
     rejectUnauthorized: false,
   };
   try {
     const response = await axios.get(url, options);
-    console.log(response.data)
+    const $ = cheerio.load(response.data);
+
+    const title = $("#productTitle").text().trim();
+    const currentPrice = extractPrice(
+      $(".priceToPay span.a-price-whole"),
+      $("a.size.base.a-color-price"),
+      $(".a-button-selected .a-color-base"),
+      $(".a-price.a-text-price")
+    );
+
+    const originalPrice = extractPrice(
+      $("#priceblock_ourprice"),
+      $("a-price.a-text-price span.a-offscreen"),
+      $("#listprice"),
+      $("#priceblock_dealprice"),
+      $(".a-size-base.a-color-price")
+    );
+
+    const outOfStock =
+      $("#availability span").text().trim().toLowerCase() ===
+      "currently unavailable";
+
+    const image =
+      $("#imgBlkFront").attr("data-a-dynamic-image") ||
+      $("#landingImage").attr("data-a-dynamic-image");
+    console.log({ title, currentPrice, originalPrice, outOfStock, image });
   } catch (error: any) {
     throw new Error(`Failed to scrape product: ${error.message}`);
   }
