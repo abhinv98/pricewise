@@ -85,16 +85,7 @@ export async function scrapeAmazonProduct(url: string) {
       sentimentClassification = "Neutral";
     }
 
-    const storedProduct = await getStoredProduct(url);
-    let priceHistory = storedProduct ? storedProduct.priceHistory : [];
-
-    // If the current price is different from the last stored price, add it to the history
-    if(priceHistory.length === 0 || priceHistory[priceHistory.length - 1].price !== Number(currentPrice)){
-      priceHistory.push({
-        price: Number(currentPrice), 
-        date: new Date()  // current date
-      });
-    }
+    
 
     const data = {
       url,
@@ -104,11 +95,12 @@ export async function scrapeAmazonProduct(url: string) {
       description,
       currentPrice: Number(currentPrice) || Number(originalPrice),
       originalPrice: Number(originalPrice) || Number(currentPrice),
-      priceHistory: priceHistory,
+      priceHistory: [],
       discountRate: Number(discountRate),
       category: "category",
       reviewsCount: Number(reviewCount),
       reviewSentiment: sentimentClassification,
+
       stars: stars,
       isOutOfStock: outOfStock,
       lowestPrice: Number(currentPrice) || Number(originalPrice),
