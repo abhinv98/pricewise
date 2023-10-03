@@ -56,7 +56,7 @@ export async function scrapeAmazonProduct(url: string) {
 
     const discountRate = $(".savingsPercentage").text().replace(/[-%]/g, "");
 
-    const reviewCount = $("#acrCustomerReviewText")
+    const reviewsCount = $("#acrCustomerReviewText")
       .text()
       .split(" ")[0]
       .replace(",", "");
@@ -98,7 +98,7 @@ export async function scrapeAmazonProduct(url: string) {
       priceHistory: [],
       discountRate: Number(discountRate),
       category: "category",
-      reviewsCount: Number(reviewCount),
+      reviewsCount: reviewsCount,
       reviewSentiment: sentimentClassification,
 
       stars: stars,
