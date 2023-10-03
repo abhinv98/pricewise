@@ -14,12 +14,15 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-responsive-carousel": "^3.2.23"
+    "react-responsive-carousel": "^3.2.23",
+    "sentiment": "^5.0.2"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.32",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/sentiment": "^5.0.1",
     "autoprefixer": "latest",
     "postcss": "latest",
     "tailwindcss": "latest",
