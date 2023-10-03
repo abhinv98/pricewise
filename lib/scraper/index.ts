@@ -1,7 +1,7 @@
 "use server";
 
 import axios from "axios";
-
+import Sentiment from "sentiment";
 import cheerio from "cheerio";
 import { extractCurrency, extractDescription, extractPrice } from "../utils";
 
@@ -63,7 +63,28 @@ export async function scrapeAmazonProduct(url: string) {
 
     const starsRaw = $("#acrPopover .a-icon-alt").text();
     const stars = parseFloat(starsRaw.split(" ")[0]);
-    
+    const sentiment = new Sentiment();
+
+    const reviewElements = $(".review-text-content span").toArray();
+
+    const sentiments = reviewElements.map((element) => {
+      const reviewText = $(element).text();
+      const sentimentScore = sentiment.analyze(reviewText).comparative;
+      return sentimentScore;
+    });
+
+    const averageSentimentScore =
+      sentiments.reduce((a, b) => a + b, 0) / sentiments.length || 0;
+
+    let sentimentClassification;
+    if (averageSentimentScore > 0) {
+      sentimentClassification = "Positive";
+    } else if (averageSentimentScore < 0) {
+      sentimentClassification = "Negative";
+    } else {
+      sentimentClassification = "Neutral";
+    }
+
     const data = {
       url,
       currency: currency,
@@ -76,6 +97,7 @@ export async function scrapeAmazonProduct(url: string) {
       discountRate: Number(discountRate),
       category: "category",
       reviewsCount: Number(reviewCount),
+      reviewSentiment: averageSentimentScore,
       stars: stars,
       isOutOfStock: outOfStock,
       lowestPrice: Number(currentPrice) || Number(originalPrice),
