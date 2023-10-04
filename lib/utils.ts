@@ -38,27 +38,23 @@ export function extractCurrency(element: any) {
 
 // Extracts description from two possible elements from amazon
 export function extractDescription($: any) {
-  // these are possible elements holding description of the product
-  const selectors = [
-    ".a-unordered-list .a-list-item",
-    ".a-expander-content p",
-    // Add more selectors here if needed
-  ];
+  const selectors = [".a-unordered-list .a-list-item", ".a-expander-content p"];
   
+  let descriptions = [];
 
   for (const selector of selectors) {
     const elements = $(selector);
     if (elements.length > 0) {
-      const textContent = elements
+      descriptions = elements
         .map((_: any, element: any) => $(element).text().trim())
-        .get()
-        .join("\n");
-      return textContent;
+        .get();
+      
+      descriptions = descriptions.filter((desc: string | any[]) => desc.length > 0);    // filter out empty strings
     }
   }
 
-  // If no matching elements were found, return an empty string
-  return "";
+  // Combine all descriptions separated by newline.
+  return descriptions.join("\n");
 }
 
 export function getHighestPrice(priceList: PriceHistoryItem[]) {
