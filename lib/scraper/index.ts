@@ -34,11 +34,11 @@ export async function scrapeAmazonProduct(url: string) {
     );
 
     const originalPrice = extractPrice(
-      $("#priceblock_ourprice"),
-      $("a-price.a-text-price span.a-offscreen"),
-      $("#listprice"),
-      $("#priceblock_dealprice"),
-      $(".a-size-base.a-color-price")
+      $('#priceblock_ourprice'),
+      $('.a-price.a-text-price span.a-offscreen'),
+      $('#listPrice'),
+      $('#priceblock_dealprice'),
+      $('.a-size-base.a-color-price')
     );
 
     const outOfStock =
@@ -98,7 +98,7 @@ export async function scrapeAmazonProduct(url: string) {
       priceHistory: [],
       discountRate: Number(discountRate),
       category: "category",
-      reviewsCount: reviewsCount,
+      reviewsCount: Number(reviewsCount),
       reviewSentiment: sentimentClassification,
 
       stars: stars,
