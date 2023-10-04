@@ -44,6 +44,7 @@ export function extractDescription($: any) {
     ".a-expander-content p",
     // Add more selectors here if needed
   ];
+  
 
   for (const selector of selectors) {
     const elements = $(selector);
