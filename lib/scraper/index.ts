@@ -5,6 +5,11 @@ import Sentiment from "sentiment";
 import cheerio from "cheerio";
 import { extractCurrency, extractDescription, extractPrice } from "../utils";
 
+
+function calculateOriginalPrice(currentPrice: number, discountRate: number) {
+  return currentPrice / (1 - (discountRate/100))
+}
+
 export async function scrapeAmazonProduct(url: string) {
   if (!url) return;
   const username = String(process.env.BRIGHT_DATA_USERNAME);
@@ -33,13 +38,9 @@ export async function scrapeAmazonProduct(url: string) {
       $(".a-price.a-text-price")
     );
 
-    const originalPrice = extractPrice(
-      $('#priceblock_ourprice'),
-      $('.a-price.a-text-price span.a-offscreen'),
-      $('#listPrice'),
-      $('#priceblock_dealprice'),
-      $('.a-size-base.a-color-price')
-    );
+
+    const discountRate = $(".savingsPercentage").text().replace(/[-%]/g, "");
+    const originalPrice = calculateOriginalPrice(Number(currentPrice), Number(discountRate));
 
     const outOfStock =
       $("#availability span").text().trim().toLowerCase() ===
@@ -54,7 +55,7 @@ export async function scrapeAmazonProduct(url: string) {
 
     const currency = extractCurrency($(".a-price-symbol"));
 
-    const discountRate = $(".savingsPercentage").text().replace(/[-%]/g, "");
+    
 
     const reviewsCount = $("#acrCustomerReviewText")
       .text()
@@ -93,8 +94,8 @@ export async function scrapeAmazonProduct(url: string) {
       image: imageUrls[0],
       title,
       description,
-      currentPrice: Number(currentPrice) || Number(originalPrice),
-      originalPrice: Number(originalPrice) || Number(currentPrice),
+      currentPrice: Number(currentPrice) || originalPrice,
+      originalPrice,
       priceHistory: [],
       discountRate: Number(discountRate),
       category: "category",
@@ -103,9 +104,9 @@ export async function scrapeAmazonProduct(url: string) {
 
       stars: stars,
       isOutOfStock: outOfStock,
-      lowestPrice: Number(currentPrice) || Number(originalPrice),
-      highestPrice: Number(originalPrice) || Number(currentPrice),
-      averagePrice: Number(currentPrice) || Number(originalPrice),
+      lowestPrice: Number(currentPrice) || originalPrice,
+      highestPrice: originalPrice || Number(currentPrice),
+      averagePrice: Number(currentPrice) || originalPrice,
     };
 
     return data;
