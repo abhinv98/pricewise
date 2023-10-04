@@ -18,7 +18,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-responsive-carousel": "^3.2.23",
-    "sentiment": "^5.0.2"
+    "sentiment": "^5.0.2",
+    "supports-color": "^8.1.1"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.32",
