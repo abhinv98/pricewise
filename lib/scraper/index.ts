@@ -94,7 +94,7 @@ export async function scrapeAmazonProduct(url: string) {
       image: imageUrls[0],
       title,
       description,
-      currentPrice: Number(currentPrice) || originalPrice,
+      currentPrice: Number(currentPrice),
       originalPrice,
       priceHistory: [],
       discountRate: Number(discountRate),
@@ -105,7 +105,7 @@ export async function scrapeAmazonProduct(url: string) {
       stars: stars,
       isOutOfStock: outOfStock,
       lowestPrice: Number(currentPrice) || originalPrice,
-      highestPrice: originalPrice || Number(currentPrice),
+      highestPrice: originalPrice ,
       averagePrice: Number(currentPrice) || originalPrice,
     };
 
